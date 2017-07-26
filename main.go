@@ -29,10 +29,6 @@ func (c configObject) command(url string) {
 	}
 }
 
-func (h *hook) setFull(full string) {
-	h.Full = full
-}
-
 func main() {
 
 	file, e := ioutil.ReadFile("./config.json")
