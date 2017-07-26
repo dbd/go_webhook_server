@@ -1,11 +1,15 @@
-{"Secretkey": "as0fn912g9ag9-9bq2g9afw0",
-"hooks": [{
-  "Name": "docker",
-  "Url": "docker-v1",
-  "Command":  "docker run -p80:8080"
-  },
-  {
-    "Name": "restart",
-    "Url": "restart-v1",
-    "Command":  "systemctl reboot -i"
-    }]}
+{
+  "Secretkey": "as0fn912g9ag9-9bq2g9afw0",
+  "hooks": [
+    {
+      "Name": "docker",
+      "Url": "docker-v1",
+      "Command": "docker run -p80:8080"
+    },
+    {
+      "Name": "restart",
+      "Url": "restart-v1",
+      "Command": "systemctl reboot -i"
+    }
+  ]
+}
