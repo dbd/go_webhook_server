@@ -1,7 +1,16 @@
 # Go Webhooks Server
-###### Design to be a lightweight and easily configurable and serve multiple Webhooks
+###### Designed to be a lightweight and easily configurable and serve multiple Webhooks
 
-The config.json contains a `Secretkey` field which is a random string to obfuscate all webhook links and a list of `hooks`. Each `hook` contains a `Name`, `URL`, and `Command`. The url is generated in the follow format `/${Secretkey}/${hook.URL}`
+The config.json contains the following
+* `Secretkey`: random string to obfuscate URL.
+* `Port`: Used to define port.
+* `hooks`: List of hooks
+* `Name`: Arbitrary name for the hook
+* `URL`: Last part of URL
+* `Command`: Command to be run
+
+
+The url is generated in the follow format `/${Secretkey}/${hook.URL}`
 
 #### config.json
 ```json

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
+	"strings"
 )
 
 type hook struct {
@@ -17,14 +19,21 @@ type hook struct {
 
 type configObject struct {
 	Secretkey string
+	Port      int
 	Hooks     []hook
 }
 
 func (c configObject) command(url string) {
 	for _, hook := range c.Hooks {
 		if hook.Full == url {
-			//TODO make this actually run the command
-			fmt.Println(hook.Command)
+			cmdlet := strings.Fields(hook.Command)
+			if len(cmdlet) == 1 {
+				cmd := exec.Command(cmdlet[0])
+				cmd.Run()
+			} else {
+				cmd := exec.Command(cmdlet[0], cmdlet[1:]...)
+				cmd.Run()
+			}
 		}
 	}
 }
@@ -56,6 +65,7 @@ func main() {
 		fmt.Println("\tURL:\t", hooks[k].Full)
 		fmt.Println("\tCommand:", hooks[k].Command)
 	}
-	http.ListenAndServe(":8080", nil)
+	port := ":" + string(config.Port)
+	http.ListenAndServe(port, nil)
 
 }
