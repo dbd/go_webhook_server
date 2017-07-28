@@ -5,7 +5,7 @@
     {
       "Name": "docker",
       "Url": "docker-v1",
-      "Command": "docker run -p80:8080"
+      "Command": "scripts/docker_restart.sh"
     },
     {
       "Name": "restart",
