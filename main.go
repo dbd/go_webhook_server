@@ -19,7 +19,7 @@ type hook struct {
 
 type configObject struct {
 	Secretkey string
-	Port      int
+	Port      string
 	Hooks     []hook
 }
 
