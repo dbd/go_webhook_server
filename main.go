@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -30,12 +31,21 @@ func (c configObject) command(url string) {
 			if len(cmdlet) == 1 {
 				cmd := exec.Command(cmdlet[0])
 				cmd.Run()
+				log.Println("Ran: " + hook.Command)
 			} else {
 				cmd := exec.Command(cmdlet[0], cmdlet[1:]...)
 				cmd.Run()
+				log.Println("Ran: " + hook.Command)
 			}
 		}
 	}
+}
+
+func (h hook) print() {
+	log.Println("Configured new hook!")
+	log.Println("\tName:" + h.Name)
+	log.Println("\tCommand:" + h.Command)
+	log.Println("\tURL:" + h.Full)
 }
 
 func main() {
@@ -46,6 +56,14 @@ func main() {
 		fmt.Printf("File error: %v\n", e)
 		os.Exit(1)
 	}
+
+	f, err := os.OpenFile("./webhooks.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	log.SetOutput(f)
+	log.Println("\n\n\n\t")
 
 	var config configObject
 
@@ -58,12 +76,19 @@ func main() {
 		hp.Full = "/" + config.Secretkey + "/" + hooks[k].URL
 
 		http.HandleFunc(hooks[k].Full, func(w http.ResponseWriter, r *http.Request) {
+			if r.Method == "POST" {
+				body, err := ioutil.ReadAll(r.Body)
+				if err != nil {
+					log.Fatal(err)
+				} else {
+					log.Println("Recieved POST response from: " + r.RemoteAddr)
+					log.Println("Recieved POST response: " + string(body))
+				}
+			}
+
 			config.command(r.RequestURI)
 		})
-		fmt.Println("Configured new hook!")
-		fmt.Println("\tName:\t", hooks[k].Name)
-		fmt.Println("\tURL:\t", hooks[k].Full)
-		fmt.Println("\tCommand:", hooks[k].Command)
+		hooks[k].print()
 	}
 	port := ":" + string(config.Port)
 	http.ListenAndServe(port, nil)
